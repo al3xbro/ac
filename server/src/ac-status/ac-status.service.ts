@@ -32,7 +32,7 @@ export class AcStatusService {
         title: 'AC Status Changed',
         body: `AC mode set to ${saved.mode.toUpperCase()}`,
       }).catch(() => {});
-    }, 5000);
+    }, 2000);
 
     return saved;
   }
