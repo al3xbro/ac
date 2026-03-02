@@ -11,7 +11,7 @@ function Home() {
   const { data: status, isLoading, isFetching } = useQuery<AcStatus | null>({
     queryKey: ['ac-status'],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ac-status`)
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/ac-status`)
       if (!res.ok) throw new Error('Failed to fetch')
       return res.json()
     },

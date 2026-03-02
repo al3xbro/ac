@@ -20,7 +20,7 @@ function SetMode({ mode }: SetModeProps) {
 
   const { mutate, isError } = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ac-status`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/ac-status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode }),
