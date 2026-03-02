@@ -16,7 +16,7 @@ function Home() {
   const navigate = useNavigate()
   const pendingMode = searchParams.get('set') as AcStatus['mode'] | null
 
-  const { data: status, isLoading, isFetching } = useQuery<AcStatus | null>({
+  const { data: status, isLoading } = useQuery<AcStatus | null>({
     queryKey: ['ac-status'],
     queryFn: async () => {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/ac-status`)
@@ -56,7 +56,7 @@ function Home() {
       <div className="border border-neutral-800 rounded-2xl p-8 w-full max-w-sm text-center">
         {isError && <p className="text-red-500 mb-4">Failed to update AC status</p>}
 
-        <div className={isFetching || setting ? 'opacity-50 transition' : 'transition'}>
+        <div className={setting ? 'opacity-50 transition' : 'transition'}>
           {isLoading ? (
             <p className="text-neutral-500">Loading...</p>
           ) : status ? (
