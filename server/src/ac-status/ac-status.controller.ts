@@ -14,7 +14,6 @@ export class AcStatusController {
 
   @Post()
   async create(@Body() dto: CreateAcStatusDto): Promise<AcStatus> {
-    await new Promise(resolve => setTimeout(resolve, 1000));
     return await this.acStatusService.create(dto);
   }
 }
