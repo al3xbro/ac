@@ -7,6 +7,8 @@ import { NotificationService } from '../push-subscription/notification.service.j
 
 @Injectable()
 export class AcStatusService {
+  private notifyTimeout: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     @InjectRepository(AcStatus)
     private readonly acStatusRepository: Repository<AcStatus>,
@@ -24,10 +26,13 @@ export class AcStatusService {
     const acStatus = this.acStatusRepository.create(dto);
     const saved = await this.acStatusRepository.save(acStatus);
 
-    this.notificationService.notifyAll({
-      title: 'AC Status Changed',
-      body: `AC mode set to ${saved.mode.toUpperCase()}`,
-    }).catch(() => {});
+    if (this.notifyTimeout) clearTimeout(this.notifyTimeout);
+    this.notifyTimeout = setTimeout(() => {
+      this.notificationService.notifyAll({
+        title: 'AC Status Changed',
+        body: `AC mode set to ${saved.mode.toUpperCase()}`,
+      }).catch(() => {});
+    }, 5000);
 
     return saved;
   }
