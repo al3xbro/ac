@@ -11,14 +11,14 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
-      // https: {
-      //   key: readFileSync(
-      //     '/etc/letsencrypt/live/alexserver.sytes.net/privkey.pem',
-      //   ),
-      //   cert: readFileSync(
-      //     '/etc/letsencrypt/live/alexserver.sytes.net/fullchain.pem',
-      //   ),
-      // },
+      https: {
+        key: readFileSync(
+          '/etc/letsencrypt/live/alexserver.sytes.net/privkey.pem',
+        ),
+        cert: readFileSync(
+          '/etc/letsencrypt/live/alexserver.sytes.net/fullchain.pem',
+        ),
+      },
     }),
     {
       bufferLogs: true,
