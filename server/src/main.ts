@@ -16,6 +16,7 @@ async function bootstrap() {
   );
 
   app.enableCors();
+  app.setGlobalPrefix('ac');
 
   await app.listen(4000, '0.0.0.0');
 }
