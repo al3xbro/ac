@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
+import { usePushNotifications } from '../hooks/usePushNotifications'
 
 interface AcStatus {
   id: number
@@ -49,6 +50,7 @@ function Home() {
     }
   }, [pendingMode, mutate])
 
+  const { isSubscribed, isSupported, isLoading: pushLoading, subscribe, unsubscribe } = usePushNotifications()
   const setting = !!pendingMode
 
   return (
@@ -98,6 +100,20 @@ function Home() {
             </>
           )}
         </div>
+
+        {isSupported && (
+          <button
+            onClick={isSubscribed ? unsubscribe : subscribe}
+            disabled={pushLoading}
+            className="mt-6 text-sm text-neutral-500 hover:text-neutral-300 transition disabled:opacity-50"
+          >
+            {pushLoading
+              ? 'Loading...'
+              : isSubscribed
+                ? 'Disable notifications'
+                : 'Enable notifications'}
+          </button>
+        )}
       </div>
     </div>
   )

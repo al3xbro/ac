@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcStatusModule } from './ac-status/ac-status.module.js';
+import { PushSubscriptionModule } from './push-subscription/push-subscription.module.js';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AcStatusModule } from './ac-status/ac-status.module.js';
       }),
     }),
     AcStatusModule,
+    PushSubscriptionModule,
   ],
 })
 export class AppModule {}
