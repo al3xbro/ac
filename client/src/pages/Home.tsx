@@ -16,6 +16,7 @@ function Home() {
       return res.json()
     },
     placeholderData: keepPreviousData,
+    refetchInterval: 2000,
   })
 
   return (
