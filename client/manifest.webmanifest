@@ -1,0 +1,16 @@
+{
+  "name": "642 AC",
+  "short_name": "642 AC",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/house.png",
+      "sizes": "600x600",
+      "type": "image/png"
+    }
+  ]
+}

@@ -101,7 +101,7 @@ function Home() {
           )}
         </div>
 
-        {isSupported && (
+        {isSupported ? (
           <button
             onClick={isSubscribed ? unsubscribe : subscribe}
             disabled={pushLoading}
@@ -113,6 +113,10 @@ function Home() {
                 ? 'Disable notifications'
                 : 'Enable notifications'}
           </button>
+        ) : (
+          <p className="mt-6 text-sm text-neutral-500">
+            Notifications unsupported. You may need to add to home screen.
+          </p>
         )}
       </div>
     </div>
