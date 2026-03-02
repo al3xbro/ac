@@ -1,6 +1,6 @@
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || 'AC Control';
+  const title = data.title || '642 AC';
   const options = {
     body: data.body || 'AC status has changed',
   };
