@@ -1,5 +1,6 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query'
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 
 interface AcStatus {
   id: number
@@ -7,7 +8,14 @@ interface AcStatus {
   timestamp: string
 }
 
+const modes = ['cool', 'heat', 'fan', 'off'] as const
+
 function Home() {
+  const queryClient = useQueryClient()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const pendingMode = searchParams.get('set') as AcStatus['mode'] | null
+
   const { data: status, isLoading, isFetching } = useQuery<AcStatus | null>({
     queryKey: ['ac-status'],
     queryFn: async () => {
@@ -19,10 +27,36 @@ function Home() {
     refetchInterval: 2000,
   })
 
+  const { mutate, isError } = useMutation({
+    mutationFn: async (mode: AcStatus['mode']) => {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/ac-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode }),
+      })
+      if (!res.ok) throw new Error('Failed to update')
+      return res.json()
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['ac-status'] })
+      navigate('/', { replace: true })
+    },
+  })
+
+  useEffect(() => {
+    if (pendingMode && modes.includes(pendingMode)) {
+      mutate(pendingMode)
+    }
+  }, [pendingMode, mutate])
+
+  const setting = !!pendingMode
+
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 select-none" onContextMenu={e => e.preventDefault()} onDragStart={e => e.preventDefault()}>
       <div className="border border-neutral-800 rounded-2xl p-8 w-full max-w-sm text-center">
-        <div className={isFetching ? 'opacity-50 transition' : 'transition'}>
+        {isError && <p className="text-red-500 mb-4">Failed to update AC status</p>}
+
+        <div className={isFetching || setting ? 'opacity-50 transition' : 'transition'}>
           {isLoading ? (
             <p className="text-neutral-500">Loading...</p>
           ) : status ? (
@@ -40,18 +74,29 @@ function Home() {
         </div>
 
         <div className="mt-8 flex flex-col gap-3">
-          <Link to="/cool" className="block bg-linear-to-l from-sky-950 to-sky-900 hover:from-sky-900 hover:to-sky-900 active:from-sky-800 active:to-sky-800 text-sky-400 rounded-lg py-3 transition">
-            Cool
-          </Link>
-          <Link to="/heat" className="block bg-linear-to-l from-red-950 to-red-900 hover:from-red-900 hover:to-red-900 active:from-red-800 active:to-red-800 text-red-400 rounded-lg py-3 transition">
-            Heat
-          </Link>
-          <Link to="/fan" className="block bg-linear-to-l from-green-950 to-green-900 hover:from-green-900 hover:to-green-900 active:from-green-800 active:to-green-800 text-green-400 rounded-lg py-3 transition">
-            Fan
-          </Link>
-          <Link to="/off" className="block bg-linear-to-l from-neutral-900 to-neutral-900 hover:from-neutral-800 hover:to-neutral-800 active:from-neutral-700 active:to-neutral-700 rounded-lg py-3 transition">
-            Off
-          </Link>
+          {setting ? (
+            <>
+              <button disabled className="bg-neutral-800 text-sky-400 opacity-50 rounded-lg py-3">Cool</button>
+              <button disabled className="bg-neutral-800 text-red-400 opacity-50 rounded-lg py-3">Heat</button>
+              <button disabled className="bg-neutral-800 text-green-400 opacity-50 rounded-lg py-3">Fan</button>
+              <button disabled className="bg-neutral-800 opacity-50 rounded-lg py-3">Off</button>
+            </>
+          ) : (
+            <>
+              <Link to="/?set=cool" className="block bg-linear-to-l from-sky-950 to-sky-900 hover:from-sky-900 hover:to-sky-900 active:from-sky-800 active:to-sky-800 text-sky-400 rounded-lg py-3 transition">
+                Cool
+              </Link>
+              <Link to="/?set=heat" className="block bg-linear-to-l from-red-950 to-red-900 hover:from-red-900 hover:to-red-900 active:from-red-800 active:to-red-800 text-red-400 rounded-lg py-3 transition">
+                Heat
+              </Link>
+              <Link to="/?set=fan" className="block bg-linear-to-l from-green-950 to-green-900 hover:from-green-900 hover:to-green-900 active:from-green-800 active:to-green-800 text-green-400 rounded-lg py-3 transition">
+                Fan
+              </Link>
+              <Link to="/?set=off" className="block bg-linear-to-l from-neutral-900 to-neutral-900 hover:from-neutral-800 hover:to-neutral-800 active:from-neutral-700 active:to-neutral-700 rounded-lg py-3 transition">
+                Off
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>
