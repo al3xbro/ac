@@ -10,6 +10,7 @@ function App() {
         <Route path="/fan" element={<SetMode mode="fan" />} />
         <Route path="/cool" element={<SetMode mode="cool" />} />
         <Route path="/heat" element={<SetMode mode="heat" />} />
+        <Route path="/off" element={<SetMode mode="off" />} />
       </Routes>
     </BrowserRouter>
   )

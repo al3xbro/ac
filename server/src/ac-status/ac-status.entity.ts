@@ -11,9 +11,6 @@ export class AcStatus {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  isOn!: boolean;
-
   @Column({ type: 'enum', enum: AcMode })
   mode!: AcMode;
 

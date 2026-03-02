@@ -9,11 +9,12 @@ export class AcStatusController {
 
   @Get()
   async getLatest(): Promise<AcStatus | null> {
-    return this.acStatusService.getLatest();
+    return await this.acStatusService.getLatest();
   }
 
   @Post()
   async create(@Body() dto: CreateAcStatusDto): Promise<AcStatus> {
-    return this.acStatusService.create(dto);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return await this.acStatusService.create(dto);
   }
 }
